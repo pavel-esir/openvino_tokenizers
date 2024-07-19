@@ -119,15 +119,6 @@ class RegexNormalizationStep(NormalizationStep):
     replace_term: str
     global_replace: bool = True
 
-    def __post_init__(self):
-        self.vet_search_pattern()
-
-    def vet_search_pattern(self) -> None:
-        if has_incompatible_re2_op(self.regex_search_pattern):
-            logger.warning(
-                "RegexNormalization pattern is not supported, operation output might differ from the original tokenizer."
-            )
-
     @classmethod
     def strip_accents_regex(cls) -> "RegexNormalizationStep":
         return cls(regex_search_pattern=r"\p{Mn}", replace_term="")

@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
-import re
 from functools import lru_cache
 from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
@@ -121,21 +120,6 @@ def change_outputs_type(model: Model, output_type: Type) -> Model:
 
 def has_incompatible_re2_op(pattern: str) -> bool:
     return "(?=" in pattern or "(?!" in pattern or "(?<=" in pattern or "(?<!" in pattern
-
-
-_subpattern_regex = re.compile(r"(?:[^()|]+|\([^)]*\))+")
-
-
-def filter_re2_incompatible(pattern: str) -> str:
-    not_filtered = []
-
-    for subpattern in (match.group() for match in _subpattern_regex.finditer(pattern)):
-        if has_incompatible_re2_op(subpattern):
-            logging.warning(f"Subpattern `{subpattern}` is not supported by re2 and filtered out.")
-            continue
-        not_filtered.append(subpattern)
-
-    return "|".join(not_filtered)
 
 
 # from transformers.models.gpt2.tokenization_gpt2
